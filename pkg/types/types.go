@@ -78,4 +78,6 @@ const (
 	Allocate = 0
 	// Deallocate operation identifier
 	Deallocate = 1
+	// Reserve operation identifier
+	Reserve = 2
 )

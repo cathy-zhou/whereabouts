@@ -40,7 +40,7 @@ func IPManagement(mode int, ipamConf types.IPAMConfig, containerID string) (net.
 	var newip net.IPNet
 	// Skip invalid modes
 	switch mode {
-	case types.Allocate, types.Deallocate:
+	case types.Allocate, types.Deallocate, types.Reserve:
 	default:
 		return newip, fmt.Errorf("Got an unknown mode passed to IPManagement: %v", mode)
 	}
@@ -101,6 +101,12 @@ RETRYLOOP:
 			updatedreservelist, err = allocate.DeallocateIP(ipamConf.Range, reservelist, containerID)
 			if err != nil {
 				logging.Errorf("Error deallocating IP: %v", err)
+				return newip, err
+			}
+		case types.Reserve:
+			updatedreservelist, err = allocate.ReserveIP(&ipamConf, reservelist, containerID)
+			if err != nil {
+				logging.Errorf("Error reserving IP: %v", err)
 				return newip, err
 			}
 		}

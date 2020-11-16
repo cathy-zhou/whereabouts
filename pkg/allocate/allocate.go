@@ -245,3 +245,18 @@ func IPToBigInt(IPv6Addr net.IP) *big.Int {
 	IPv6Int.SetBytes(IPv6Addr)
 	return IPv6Int
 }
+
+// AssignIP assigns an IP using a range and a reserve list.
+func ReserveIP(ipamConf *types.IPAMConfig, reservelist []types.IPReservation, containerID string) ([]types.IPReservation, error) {
+	reserveIP := ipamConf.Addresses[0].Address.IP
+	reserveIPInt := IPToBigInt(reserveIP)
+	firstIPInt := IPToBigInt(ipamConf.RangeStart)
+	lastIPInt := IPToBigInt(ipamConf.RangeEnd)
+
+	if reserveIPInt.Cmp(firstIPInt) < 0 || reserveIPInt.Cmp(lastIPInt) > 0 {
+		return nil, fmt.Errorf("the IP to be reserved is not within the firstIP and lastIP")
+	}
+	reservelist = append(reservelist, types.IPReservation{IP: reserveIP, ContainerID: containerID})
+
+	return reservelist, nil
+}

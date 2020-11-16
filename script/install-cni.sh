@@ -97,6 +97,16 @@ else
   warn "Doesn't look like we're running in a kubernetes environment (no serviceaccount token)"
 fi
 
+# read the IPAM results files in /var/lib/cni/results directory and
+# populate whereabout's IPpool object for that particular subnet
+export WHEREABOUTS_RESULTSDIR=${WHEREABOUTS_RESULTSDIR:-"/host/var/lib/cni/results"}
+export WHEREABOUTS_KUBECONFIG
+/migrate
+if [[ $? != 0 ]]; then
+  echo "Failed to sync the IPAM results configuration in ${WHEREABOUTS_RESULTSDIR} to whereabouts IPAM"
+  exit 1
+fi
+
 # copy whereabouts to the cni bin dir
 cp -f /whereabouts $CNI_BIN_DIR
 
