@@ -1,4 +1,4 @@
-module github.com/dougbtv/whereabouts
+module github.com/cathy-zhou/whereabouts
 
 go 1.12
 
